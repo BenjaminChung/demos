@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns="http://www.springframework.org/schema/beans"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!-- 环境相关的配置文件配置. -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>file:${appConfigHome}/datasource.properties</value>
+            </list>
+        </property>
+        <!-- 本地环境下使用此值 -->
+        <property name="properties" ref="configProperties"/>
+    </bean>
+    <bean name="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:conf/datasource.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 主数据库 -->
+    <bean id="DS_MASTER"
+          class="org.apache.tomcat.jdbc.pool.DataSource"
+          destroy-method="close">
+        <property name="poolProperties">
+            <bean class="org.apache.tomcat.jdbc.pool.PoolProperties">
+                <property name="url"
+                          value="${db-url}"/>
+                <property name="driverClassName"
+                          value="${db-driver}"/>
+                <property name="username" value="${db-username}"/>
+                <property name="password" value="${db-password}"/>
+                <property name="jmxEnabled" value="true"/>
+                <property name="testWhileIdle" value="false"/>
+                <property name="testOnBorrow" value="true"/>
+                <property name="validationInterval" value="30000"/>
+                <property name="testOnReturn" value="false"/>
+                <property name="validationQuery" value="select 1"/>
+                <property name="timeBetweenEvictionRunsMillis"
+                          value="30000"/>
+                <property name="maxActive" value="1000"/>
+                <property name="initialSize" value="100"/>
+                <property name="maxWait" value="10000"/>
+                <property name="removeAbandonedTimeout" value="150"/>
+                <property name="minEvictableIdleTimeMillis"
+                          value="30000"/>
+                <property name="maxIdle" value="200"/>
+                <property name="minIdle" value="100"/>
+                <property name="logAbandoned" value="true"/>
+                <property name="removeAbandoned" value="true"/>
+                <property name="jdbcInterceptors"
+                          value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 从数据库 -->
+    <bean id="DS_SLAVE"
+          class="org.apache.tomcat.jdbc.pool.DataSource"
+          destroy-method="close">
+        <property name="poolProperties">
+            <bean class="org.apache.tomcat.jdbc.pool.PoolProperties">
+                <property name="url"
+                          value="${db-url1}"/>
+                <property name="driverClassName"
+                          value="${db-driver}"/>
+                <property name="username" value="${db-username1}"/>
+                <property name="password" value="${db-password1}"/>
+                <property name="jmxEnabled" value="true"/>
+                <property name="testWhileIdle" value="false"/>
+                <property name="testOnBorrow" value="true"/>
+                <property name="validationInterval" value="30000"/>
+                <property name="testOnReturn" value="false"/>
+                <property name="validationQuery" value="select 1"/>
+                <property name="timeBetweenEvictionRunsMillis"
+                          value="30000"/>
+                <property name="maxActive" value="1000"/>
+                <property name="initialSize" value="100"/>
+                <property name="maxWait" value="10000"/>
+                <property name="removeAbandonedTimeout" value="150"/>
+                <property name="minEvictableIdleTimeMillis"
+                          value="30000"/>
+                <property name="maxIdle" value="200"/>
+                <property name="minIdle" value="100"/>
+                <property name="logAbandoned" value="true"/>
+                <property name="removeAbandoned" value="true"/>
+                <property name="jdbcInterceptors"
+                          value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"/>
+            </bean>
+        </property>
+    </bean>
+
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dynamicDataSource"/>
+    </bean>
+
+    <bean id="dynamicDataSource" class="com.ld.datasource.DynamicDataSource">
+        <!-- 通过key-value的形式来关联数据源 -->
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry value-ref="DS_MASTER" key="DS_MASTER"></entry>
+                <entry value-ref="DS_SLAVE" key="DS_SLAVE"></entry>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="DS_MASTER">
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dynamicDataSource"/>
+    </bean>
+
+    <!-- 这个是基于注解式的事务驱动，必须要配置，否则事务无效 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- 自动注解 -->
+    <context:annotation-config />
+    <context:component-scan base-package="com.ld.datasource" />
+    <!-- 启用AspectJ注解 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+</beans>
