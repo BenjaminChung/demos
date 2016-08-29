@@ -1,12 +1,10 @@
 package com.whale.demo.datasource;
 
-import com.ld.datasource.annotation.DataSource;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
-import org.aspectj.lang.annotation.Aspect;
 
 import java.lang.reflect.Method;
 
