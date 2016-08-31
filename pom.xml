@@ -10,6 +10,7 @@
     <modules>
         <module>datasource-demo</module>
         <module>shiro-demo</module>
+        <module>juc-demo</module>
     </modules>
 
 </project>
