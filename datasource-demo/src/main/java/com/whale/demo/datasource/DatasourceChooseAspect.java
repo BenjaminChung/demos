@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 @Aspect
 public class DatasourceChooseAspect {
 
+
     private static final String SELECT = "select";
 
     private static final String INSERT = "insert";
@@ -24,8 +25,8 @@ public class DatasourceChooseAspect {
 
     private static final String UPDATE = "update";
 
-    @Before(value="execution(* com.ld.datasource.DAO.*.*(..))")
-    public void beforeExecute(JoinPoint joinPoint){
+    @Before(value = "execution(* com.ld.datasource.DAO.*.*(..))")
+    public void beforeExecute(JoinPoint joinPoint) {
         Object target = joinPoint.getTarget();
         Class classz = target.getClass();
         Class<?>[] parameterTypes = ((MethodSignature) joinPoint.getSignature())
@@ -37,7 +38,7 @@ public class DatasourceChooseAspect {
             if (method != null && method.isAnnotationPresent(DataSource.class)) {
                 DataSource data = method.getAnnotation(DataSource.class);
                 DataSourceContextHolder.setDataSource(data.value());
-            }else {
+            } else {
                 //默认方式
                 //读操作走从库
                 if (methodName.startsWith(SELECT)) {
