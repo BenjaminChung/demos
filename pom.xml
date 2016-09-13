@@ -11,6 +11,7 @@
         <module>datasource-demo</module>
         <module>shiro-demo</module>
         <module>juc-demo</module>
+        <module>socket-demo</module>
     </modules>
 
 </project>
