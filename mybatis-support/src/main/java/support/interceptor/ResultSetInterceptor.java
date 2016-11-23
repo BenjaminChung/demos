@@ -1,7 +1,8 @@
 package support.interceptor;
 
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
-import yonyou.mss.mybatis.support.query.Page;
+import org.apache.ibatis.plugin.*;
+import support.query.Page;
 
 import java.sql.Statement;
 import java.util.List;

@@ -1,9 +1,7 @@
 package com.ds.test;
 
-import com.ld.datasource.DAO.UserDAO;
-import com.ld.datasource.DataSourceContextHolder;
-import com.ld.datasource.bussiness.UserService;
-import com.ld.web.model.User;
+
+import com.whale.demo.datasource.DataSourceContextHolder;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,22 +13,6 @@ import org.springframework.util.Assert;
 public class TestDataSource extends SpringTestBase {
     @Autowired
     JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    UserDAO userDAO;
-
-    @Test
-    public void testAnnotaionMaster() {
-        userDAO.selectUserCount();
-    }
-
-    @Test
-    public void testCodeSlave() {
-        userDAO.selectFromSlave();
-    }
 
     @Test
     public void testChanngeDatasourceToSlave() {

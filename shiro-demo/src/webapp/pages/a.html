@@ -1,0 +1,12 @@
+<!doctype html>
+<html ng-app>
+<head>
+    <script src="http://code.angularjs.org/angular-1.0.1.min.js"></script>
+    <script src="DemoController.js"></script>
+</head>
+<body ng-controller="DemoController">
+ <ul ng-repeat="demo in demoList">
+     <li>{{demo.name}},{{demo.age}}</li>
+ </ul>
+</body>
+</html>

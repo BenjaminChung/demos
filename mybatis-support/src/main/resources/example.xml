@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yonyou.mss.dao.MeetingMapper">
+
+    <resultMap type="Meeting" id="resultMap">
+        <id property="id" column="id" typeHandler="org.apache.ibatis.type.LongTypeHandler"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+    </resultMap>
+
+
+    <sql id="select_columns">
+        t.id,  t.name,  t.create_time,  t.last_update_time
+    </sql>
+    <insert id="save" parameterType="Meeting">
+        <selectKey resultType="long" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        <![CDATA[
+			 INSERT INTO meeting(
+				 name,  create_time,  last_update_time
+			 )VALUES(
+			 	#{name}, now(),  now()
+			 )
+		 ]]>
+    </insert>
+
+    <update id="update" parameterType="Meeting" flushCache="true">
+        UPDATE meeting t
+        <set>
+            <if test="name!= null and name!= ''" >t.name=#{name},</if>
+            t.last_update_time = now()
+        </set>
+        WHERE id = #{id,javaType=long}
+    </update>
+
+    <!-- 主键删除 -->
+    <delete id="deleteOne" flushCache="true" parameterType="Long">
+        DELETE FROM meeting WHERE id = #{id}
+    </delete>
+
+
+
+    <!-- 多行删除 -->
+    <delete id="deleteMulti"  parameterType="List">
+        delete from meeting
+        <where>
+            <if test="list != null and list != ''">
+                id in
+                <foreach collection="list" item="key" open=" ( " close=" ) " separator=",">
+                    #{key}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+
+    <!-- 全部删除 -->
+    <delete id="flushAll" >
+        delete from meeting
+    </delete>
+
+
+    <!-- 对象查询 -->
+    <select id="findOne" resultMap="resultMap" parameterType="Long">
+        SELECT
+        <include refid="select_columns"/>
+        FROM meeting t
+        WHERE t.id = #{id}
+    </select>
+
+    <!-- list分页查询 -->
+    <select id="selectList" resultMap="resultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="select_columns"/>
+        FROM meeting t
+        <include refid="select_where_sql"/>
+    </select>
+
+    <!-- 查询字段  -->
+    <sql id="select_where_sql">
+        <where>
+            <if test="id!= null and id!= ''" > AND t.id=#{id}</if>
+            <if test="name!= null and name!= ''" > AND t.name=#{name}</if>
+        </where>
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="getPageList" resultMap="resultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="select_columns"/>
+        FROM meeting t
+        <include refid="page_where_sql"/>
+        <if test="tableSorts!=null and tableSorts!=''"> ORDER  BY  ${tableSorts}</if>
+    </select>
+
+    <!-- 查询字段  -->
+    <sql id="page_where_sql">
+        <where>
+            <if test="id!= null and id!= ''" > AND t.id=#{id}</if>
+            <if test="name!= null and name!= ''" > AND t.name=#{name}</if>
+        </where>
+    </sql>
+
+</mapper>

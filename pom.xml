@@ -12,6 +12,7 @@
         <module>shiro-demo</module>
         <module>juc-demo</module>
         <module>socket-demo</module>
+        <module>mybatis-support</module>
     </modules>
 
 </project>
