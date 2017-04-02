@@ -10,8 +10,8 @@
     </parent>
 
     <groupId>com.whale.demo</groupId>
-    <artifactId>datasource</artifactId>
-
+    <artifactId>datasource-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <spring.version>4.1.2.RELEASE</spring.version>
@@ -116,7 +116,7 @@
 
     </dependencies>
     <build>
-        <finalName>datasource</finalName>
+        <finalName>datasource-demo</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
