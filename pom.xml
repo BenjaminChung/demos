@@ -13,6 +13,7 @@
         <module>juc-demo</module>
         <module>socket-demo</module>
         <module>mybatis-support</module>
+        <module>netty-demo</module>
     </modules>
 
 </project>
