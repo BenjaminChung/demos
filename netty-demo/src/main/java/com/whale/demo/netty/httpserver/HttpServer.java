@@ -40,7 +40,7 @@ public class HttpServer {
 
 
                         }
-                    }).option(ChannelOption.SO_BACKLOG, 128)
+                    }).option(ChannelOption.SO_BACKLOG, 128)//最多允许128个连接
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
             System.out.println("server started");
