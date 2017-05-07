@@ -25,30 +25,16 @@ public class JdkDbQueryHandler implements InvocationHandler{
     }
 
     public static void main(String[] args) {
-        IDBQuery query = null;
         long startTime = System.currentTimeMillis();
-        query = createJdkProxy();
+        IDBQuery query = createJdkProxy();
         System.out.println("create jdk proxy:"+(System.currentTimeMillis()-startTime)+"ms");
+        startTime = System.currentTimeMillis();
         System.out.println(query.request());
+        System.out.println("call method cost time:"+(System.currentTimeMillis() - startTime));
     }
 }
 
 
-interface IDBQuery {
-    String request();
-}
 
-class DBQuery implements IDBQuery{
 
-    public DBQuery(){
-        try{
-            Thread.sleep(1000);
-        }catch (InterruptedException ex){
-            ex.printStackTrace();
-        }
-    }
 
-    public String request() {
-        return "request string";
-    }
-}
